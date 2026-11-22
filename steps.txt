@@ -1,0 +1,125 @@
+Step 1 — Upload
+Create /upload
+Accept PDF initially.
+Save it into data/uploads/
+Generate a unique document_id.
+
+Step 2 — Document loading
+
+Extract text from PDF.
+Don't involve an LLM yet.
+Verify you can print/examine the extracted text.
+
+Step 3 — Chunking
+
+Split extracted text into chunks, e.g. 500–1000 tokens with overlap.
+
+Keep metadata with every chunk:
+
+document_id
+page_number
+chunk_id
+
+Step 4 — Embeddings
+
+Convert each chunk into an embedding.
+Start with a free/local embedding model if you want to keep the project cheap.
+
+Step 5 — Vector database
+
+Store embeddings + chunks + metadata in ChromaDB initially.
+You should now have:
+PDF
+ ↓
+Text
+ ↓
+Chunks
+ ↓
+Embeddings
+ ↓
+ChromaDB
+
+Step 6 — Retrieval
+Create something like:
+
+question
+   ↓
+question embedding
+   ↓
+similarity search
+   ↓
+top 3–5 relevant chunks
+
+Test this without an LLM first. Ask a question and make sure the retrieved chunks actually contain the answer.
+
+Step 7 — RAG generation
+Now connect your LLM:
+
+User question
+      ↓
+Embedding
+      ↓
+Vector search
+      ↓
+Relevant chunks
+      ↓
+Prompt = question + chunks
+      ↓
+LLM
+      ↓
+Answer
+
+Tell the LLM something like: "Answer only using the provided context. If the answer isn't present, say you don't know."
+
+Step 8 — API
+Connect everything:
+
+POST /upload
+POST /ask
+
+For /ask, send:
+
+{
+  "document_id": "abc123",
+  "question": "What was the company's revenue in 2024?"     
+}
+
+Step 9 — Add citations
+This is important for making the project look like a real RAG system, not just a chatbot. Return:
+
+Answer: The company's revenue was ₹X crore.
+
+
+Sources:
+- Page 12
+- Page 27
+
+Step 10 — UI
+Only after the backend works, make a Streamlit UI:
+
+┌───────────────────────────────┐
+│       📄 Upload Document      │
+│       [ Choose File ]         │
+│                               │
+│  Document: Annual_Report.pdf  │
+│                               │
+│  Ask a question:              │
+│  [_________________________]  │
+│                               │
+│          [ Ask ]              │
+│                               │
+│  Answer                       │
+│  ─────────────────────────    │
+│  ...                          │
+│                               │
+│  Sources: Page 12, Page 27   │
+└───────────────────────────────┘
+
+
+
+Multiple PDFs + document_id + metadata
+🔜 Better retrieval / reranking
+🔜 Tables/images
+🔜 Threads + thread_id + chat history
+🔜 Connect thread → selected documents
+🔜 Frontend

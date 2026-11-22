@@ -1,0 +1,26 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.pytest_cache/
+
+# Local configuration and workspace files
+.env
+.env.*
+!.env.example
+/.claude/
+/.vscode/
+
+# Local documents, uploads, indexes, and database files
+/Research Papers/
+/data/
+
+# Application diagnostics
+logs/
+/mcp_server.log
